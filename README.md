@@ -96,3 +96,26 @@ WHERE v.column_ppi != b.column_ppi;
 ---
 
 Let me know if you want to include screenshots, sample data, or test evidence tables as well.
+
+
+Thanks for the clarification! Based on your documentation style, here's the functional test documentation in your **table format** for the change involving the addition of `column_ppi` to existing views.
+
+---
+
+### 🧪 Functional Test Documentation – `column_ppi` Addition
+
+| **Source FDP**   | **Source FDP Data Attribute** | **Given When Then (GWT)**                                                                                                                                                   | **Description**                                                  | **SQL / SQL Filename**                                                                                                          | **XRAY Artifact** | **DIM Issue Raised**         |
+| ---------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ---------------------------- |
+| `xyz_base_table` | `column_ppi`                  | **Given** the base table `xyz_base_table` has the `column_ppi`<br>**When** the view `<view_name>` is queried<br>**Then** `column_ppi` should be present in the schema       | Validate if `column_ppi` is added to all required views          | `SELECT column_ppi FROM <view_name> LIMIT 1;`                                                                                   | `XRAY-12345`      | No                           |
+| `xyz_base_table` | `column_ppi`                  | **Given** valid data is present in the base table for `column_ppi`<br>**When** data flows into the view<br>**Then** `column_ppi` should not be null (as per business rules) | Validate `column_ppi` is populated correctly in the view         | `SELECT COUNT(*) FROM <view_name> WHERE column_ppi IS NULL;`                                                                    | `XRAY-12346`      | No                           |
+| `xyz_base_table` | `column_ppi`                  | **Given** values in `column_ppi` are transformed correctly (or passed as-is)<br>**When** the view is queried<br>**Then** the values should match source accurately          | Check data correctness by comparing with base table              | `SELECT v.column_ppi, b.column_ppi FROM <view_name> v JOIN xyz_base_table b ON v.id = b.id WHERE v.column_ppi != b.column_ppi;` | `XRAY-12347`      | No                           |
+| `xyz_base_table` | `column_ppi`                  | **Given** consumers use existing views<br>**When** the views are queried after the addition<br>**Then** there should be no impact to existing queries                       | Backward compatibility check to ensure legacy queries don’t fail | Use previously validated queries from test suite or dashboards                                                                  | `XRAY-12348`      | No                           |
+| `xyz_base_table` | `column_ppi`                  | **Given** the column is sensitive (if PII)<br>**When** views are queried by roles<br>**Then** access should comply with security model                                      | Validate column access permissions and masking (if applicable)   | Security test script or view GRANTS                                                                                             | `XRAY-12349`      | If access rules missing, Yes |
+
+---
+
+Let me know:
+
+* If the `XRAY Artifact` values should be updated with actual IDs.
+* If `DIM Issue Raised` should be marked for any specific validation failure.
+* If you'd like a downloadable CSV or Confluence table markup version.
